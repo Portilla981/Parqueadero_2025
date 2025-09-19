@@ -1,8 +1,12 @@
 
+
+from parqueadero import Parqueadero
+
 class Menu:
 
 	def __init__ (self):
-		pass
+		self.propietario = Propietario()
+		
 	
 	def mostrar_menu_parqueadero():
 
@@ -47,6 +51,14 @@ class Menu:
 								print("\n\t************************************************"
 									"\n\t\t- MÓDULO REGISTRAR PROPIETARIOS -"
 									"\n\t************************************************")
+
+								codigo = str(input("Ingrese el codigo del propietario: "))
+
+								pos_propietario = self.parqueadero.registrar_propietario(codigo, "Propietario")
+
+								if pos_propietario == -1:
+									self.propietario.registrar_propietario(pos_propietario)
+
 
 							elif opcion == 2:
 								system('cls')
