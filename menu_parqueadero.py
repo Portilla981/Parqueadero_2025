@@ -1,14 +1,14 @@
-
-
+from os import system 
 from parqueadero import Parqueadero
+from propietarios import Propietario
 
 class Menu:
 
 	def __init__ (self):
-		self.propietario = Propietario()
+		self.parqueadero = Parqueadero()
 		
 	
-	def mostrar_menu_parqueadero():
+	def mostrar_menu_parqueadero(self):
 
 		while True:
 			system('cls')
@@ -31,6 +31,8 @@ class Menu:
 
 				if opcion == 1:
 
+					indice = "Propietario"
+
 					while True:
 						system('cls')
 						print("\t************************************************"
@@ -52,19 +54,58 @@ class Menu:
 									"\n\t\t- MÓDULO REGISTRAR PROPIETARIOS -"
 									"\n\t************************************************")
 
-								codigo = str(input("Ingrese el codigo del propietario: "))
+								codigo = str(input("\tIngrese el numero de identificacion del propietario: "))
+								while codigo.isdigit() == False:
+									codigo = str(input("\tEl dato ingresado no es un número de identificacion."
+										"\n\tIngrese el numero de identificacion del propietario: "))
 
-								pos_propietario = self.parqueadero.registrar_propietario(codigo, "Propietario")
+								pos_propietario = self.parqueadero.busqueda_general(codigo, indice)
 
 								if pos_propietario == -1:
-									self.propietario.registrar_propietario(pos_propietario)
 
+									nombre = str(input("\tIngrese el nombre del propietario: ")).strip().upper()
+									while nombre == "":
+										nombre = str(input("\tEl dato ingresado está vacío"
+											"\n\tIngrese el nombre del propietario: ")).strip().upper()
+
+
+									apellido = str(input("\tIngrese el apellido del propietario: ")).strip().upper()
+									while apellido == "":
+										apellido = str(input("\tEl dato ingresado está vacío"
+											"\n\tIngrese el apellido del propietario: ")).strip().upper()
+
+									telefono = str(input("\tIngrese el número telefónico del propietario: ")).strip()
+									while telefono.isdigit() == False:
+										telefono = str(input("\tEl dato ingresado no es un número telefónico."
+											"\n\tIngrese el número telefónico del propietario: ")).strip()
+
+									
+									correo = str(input("\tIngrese el email del propietario: ")).strip()
+									while self.parqueadero.validar_email(correo) == False:
+										correo = str(input("\tEl dato ingresado no es un email valido."
+											"\n\tIngrese el email del propietario: ")).strip()
+
+									mensaje = "\t¿Desea almacenar los datos del Propietario en el sistema?"
+									valor = self.parqueadero.confirmacion(mensaje)
+
+									if valor == 1:
+										propietario = Propietario(codigo, nombre, apellido, telefono, correo)
+										self.parqueadero.registrar_general(propietario, indice)										
+
+									else:
+										print("\n\tSe cancelo la creacion del propietario")
+
+								else:
+									print(f"\n\tEl numero de identificacion {codigo}, ya está registrado.")
 
 							elif opcion == 2:
 								system('cls')
 								print("\n\t************************************************"
 									"\n\t\t- MÓDULO LISTAR PROPIETARIOS -"
 									"\n\t************************************************")
+
+								self.parqueadero.listar_general(indice)
+
 							
 							elif opcion == 3:
 								system('cls')
@@ -72,17 +113,64 @@ class Menu:
 									"\n\t\t- MÓDULO VISUALIZAR PROPIETARIO -"
 									"\n\t************************************************")
 
+								codigo = str(input("\tIngrese el numero de identificacion del propietario: "))
+
+								pos_propietario = self.parqueadero.busqueda_general(codigo, indice)
+
+								if pos_propietario != -1:
+
+									self.parqueadero.visualizar_general(pos_propietario, indice)
+
+								else:
+									print(f"\n\tEl numero de identificacion {codigo}, No está registrado en el sistema.")
+
 							elif opcion == 4:
 								system('cls')
 								print("\n\t************************************************"
 									"\n\t\t- MÓDULO MODIFICAR PROPIETARIOS -"
 									"\n\t************************************************")
 
+								codigo = str(input("\tIngrese el numero de identificacion del propietario que desea modificar: "))
+
+								pos_propietario = self.parqueadero.busqueda_general(codigo, indice)
+
+								if pos_propietario != -1:
+
+									self.parqueadero.modificar_general(pos_propietario, indice)
+									
+									
+								else:
+									print(f"\n\tEl numero de identificacion {codigo}, No está registrado en el sistema.")
+
+
 							elif opcion == 5:
 								system('cls')
 								print("\n\t************************************************"
 									"\n\t\t- MÓDULO ELIMINAR PROPIETARIOS -"
 									"\n\t************************************************")
+
+								codigo = str(input("\tIngrese el numero de identificacion del propietario que desea eliminar: "))
+
+								pos_propietario = self.parqueadero.busqueda_general(codigo, indice)
+
+								if pos_propietario != -1:
+
+									mensaje = "\t¿Desea eliminar este propietario del sistema?"
+									valor = self.parqueadero.confirmacion(mensaje)
+
+									if valor == 1:
+
+										del self.parqueadero.propietarios_lista[pos_propietario]
+
+										print("\n\tSe ha eliminado a el propietario elegido")
+
+									else:
+										print("\n\tSe cancelo la eliminacion del propietario") 
+									
+								else:
+									print(f"\n\tEl numero de identificacion {codigo}, No está registrado en el sistema.")
+
+
 
 							elif opcion == 0:
 								print("\n\t********************************************************"
@@ -100,6 +188,7 @@ class Menu:
 							print("\t************************************************"
 								"\n\t***  Error - El dato ingresado no es válido  ***"
 								"\n\t************************************************")
+						input("\n\t¡Presione alguna tecla para continuar!")
 
 				elif opcion == 2:
 
