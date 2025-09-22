@@ -86,17 +86,7 @@ class Propietario:
 						break
 			
 				elif opcion == 5:
-					email = str(input("\tIngrese el nuevo correo electronico del Propietario: ")).strip()
-					while self.validar_email(email) == False:
-						email = str(input("\tEl dato ingresado no es valido para correo electronico"
-							"\n\tIngrese el nuevo correo electronico del Propietario: ")).strip()
-
-					if self.confirmacion() == 1:
-						self.email_propietario = email
-						print("\n\tEl Correo electronico del Propietario fue modificado exitosamente.")
-					else:
-						print("\n\tSe cancela la modificacion, No se guardara cambios.")
-						break			
+					return 1					
 
 				elif opcion == 0:
 					break
