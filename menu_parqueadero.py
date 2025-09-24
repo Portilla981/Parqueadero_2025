@@ -426,26 +426,26 @@ class Menu:
 
 										placa = str(input("\tIngrese la placa del vehiculo para registrar la salida: ")).strip().upper()								
 
-										pos_vehiculo = self.parqueadero.busqueda_general(placa, "Vehiculo")
+										# pos_vehiculo = self.parqueadero.busqueda_general(placa, "Vehiculo")
 
-										if pos_vehiculo != -1:
+										# if pos_vehiculo != -1:
 
-											lugar = ""
+										lugar = ""
 
-											for i in range(len(self.parqueadero.parqueos_lista)):
-												# print(self.parqueadero.parqueos_lista[i].placa_parqueo)
-												if self.parqueadero.parqueos_lista[i].placa_parqueo == placa:						
-													lugar = i														
+										for i in range(len(self.parqueadero.parqueos_lista)):
+											# print(self.parqueadero.parqueos_lista[i].placa_parqueo)
+											if self.parqueadero.parqueos_lista[i].placa_parqueo == placa:						
+												lugar = i														
 
-											if lugar != "":
+										if lugar != "":
 
-												self.parqueadero.registrar_general(lugar, "Salida")
-												
-											else:
-												print(f"\n\tLa placa {placa}, No está registrado en el sistema.2")
-
+											self.parqueadero.registrar_general(lugar, "Salida")
+											
 										else:
-											print(f"\n\tLa placa {placa}, No está registrado en el sistema.")											
+											print(f"\n\tLa placa {placa}, No está registrado en el sistema.")
+
+										# else:
+										# 	print(f"\n\tLa placa {placa}, No está registrado en el sistema.")											
 
 									elif tipo == 0:
 										break
@@ -491,7 +491,7 @@ class Menu:
 									if lugar != "":
 										self.parqueadero.visualizar_general(lugar, indice)
 									else:
-										print(f"\n\tLa placa {placa}, No está registrado en el sistema.2")
+										print(f"\n\tLa placa {placa}, No está registrado en el sistema.")
 
 								else:
 									print(f"\n\tLa placa {placa}, No está registrado en el sistema.")
@@ -502,7 +502,18 @@ class Menu:
 									"\n\t\t- MÓDULO ANULAR PARQUEO -"
 									"\n\t************************************************")
 
-								self.parqueadero.eliminar_general('anular', inidice)
+								posicion = len(self.parqueadero.parqueos_lista)
+
+								if posicion > 0:
+
+									posicion = len(self.parqueadero.parqueos_lista) - 1
+									print("\tRecuerde que este modulo solo anulara la ultima entrada registrada,"
+										"\n\tuna vez se registre la anulacion de la entrada podra realizar nuevamente el ingreso del vehiculo\n")
+
+									self.parqueadero.eliminar_general(posicion, indice)
+
+								else:
+									print("Aun no tienes registros de ingreso de vehiculos")
 							
 
 							elif opcion == 0:
@@ -559,42 +570,13 @@ class Menu:
 						else:
 							print (f"\tMotocicletas:\t{moto} zonas Ocupadas")
 
-
-
 				elif opcion == 5:
 					system('cls')
 					print("\n\t************************************************"
 					"\n\t\t- MÓDULO PARQUEOS DISPONIBLES -"
 					"\n\t************************************************")
 
-					lista  = self.parqueadero.parqueos_lista
-					vehi = 0
-					moto = 0
-
-					for i in range(len(lista)):
-						if self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "AUTOMOVIL":
-							vehi += 1
-						elif self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "MOTOCICLETA":
-							moto += 1
-
-					total = vehi + moto
-
-					if total == 0:
-						print(f"\tEn el momento tiene un total de 20 parqueos disponibles,"
-							"\n\t10 para Automoviles y 10 para Motocicletas")
-					else:
-						print(f"\tEn el momento tiene un total de {20 - total} parqueos disponibles, de la siguinete forma:")
-
-						if vehi == 9:
-							print (f"\tAutomoviles:\t1 zona Disponible")
-						else:
-							print (f"\tAutomoviles:\t{10 - vehi} zonas Disponibles")
-
-						if moto == 9:
-							print (f"\tMotocicletas:\t1 zona Disponible ")
-						else:
-							print (f"\tMotocicletas:\t{10 - moto} zonas Disponibles ")
-					
+					self.parqueadero.reporte_general(2)					
 
 				elif opcion == 6:
 
@@ -604,7 +586,8 @@ class Menu:
 							"\n\t\t- OPCIONES PARA REPORTES -"
 							"\n\t************************************************"
 							"\n\t****** 1. Reporte de registro cantidad de Vehiculos parqueados"
-							"\n\t****** 2. Reporte de pagos recibidos por parqueo"
+							"\n\t****** 2. Reporte de registro cantida de espacios disponibles"
+							"\n\t****** 3. Reporte de pagos recibidos por parqueo"
 							"\n\t****** 0. Volver al menú inicial ")
 						
 						try:
@@ -622,10 +605,18 @@ class Menu:
 							elif opcion == 2:
 								system('cls')
 								print("\n\t************************************************"
-									"\n\t- REPORTE PAGOS RECIBIDOS POR PARQUEO -"
+									"\n\t- REPORTE CANTIDAD DE ESPACIOS DISPONIBLES -"
 									"\n\t************************************************")
 
 								self.parqueadero.reporte_general(2)
+
+							elif opcion == 3:
+								system('cls')
+								print("\n\t************************************************"
+									"\n\t- REPORTE PAGOS RECIBIDOS POR PARQUEO -"
+									"\n\t************************************************")
+
+								self.parqueadero.reporte_general(3)
 
 
 							elif opcion == 0:

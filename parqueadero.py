@@ -105,12 +105,12 @@ class Parqueadero:
 
 			if elemento == 1:
 				ident = 'AUTOMOVIL'
-				zona = "VEHICULO-000"
+				zona = "VEHICULO-001"
 				precio = 2800
 
 			elif elemento == 2:
 				ident = 'MOTOCICLETA'
-				zona = "MOTOCICLETA-00"	
+				zona = "MOTOCICLETA-01"	
 				precio = 1500
 			
 			contador = 0
@@ -128,8 +128,7 @@ class Parqueadero:
 
 					if conversion:
 						num = int(conversion.group())
-						zona = valor[:conversion.start()] + str(num + 1).zfill(len(conversion.group()))
-						print(zona)
+						zona = valor[:conversion.start()] + str(num + 1).zfill(len(conversion.group()))						
 					
 					else:
 						print("no hay consecutivo")					
@@ -151,7 +150,7 @@ class Parqueadero:
 				if pos_vehiculo != -1:
 					lugar = 0
 
-					for parqueo in self.parqueos_lista:
+					for parqueo in self.parqueos_lista:						
 						if parqueo.placa_parqueo == placa:						
 							lugar = 1 	
 							break
@@ -191,9 +190,10 @@ class Parqueadero:
 							parque_datos.append(tipo)
 							parque_datos.append(placa)
 							parque_datos.append(nombre_propietario)
-							parque_datos.append("Registro salida")
+							parque_datos.append("NO registra salida")
 							parque_datos.append("Tiempo Total")
 							parque_datos.append(precio)
+							parque_datos.append(0)
 							parque_datos.append(0)
 
 							self.reporte_lista.append(parque_datos)
@@ -238,8 +238,12 @@ class Parqueadero:
 				print(f"\tRegistro de ingreso: {fecha_ingreso}")
 				print("\n\tFecha de salida")
 				fecha_salida = self.fecha_usuario.crear_fecha()
+				while fecha_salida == False:
+					fecha_salida = self.fecha_usuario.crear_fecha()
+
 				print("\tHora de salida")
 				fecha_salida = fecha_salida.visualizar_fecha()
+
 				hora_usuario, unidad = self.fecha_usuario.crear_hora(fecha_salida)
 				
 
@@ -252,13 +256,15 @@ class Parqueadero:
 					horas_dif = int(diferencia // 60)
 					minutos_dif = int(diferencia % 60)
 					
-					if minutos_dif > 1:
+					if minutos_dif >= 1:
 						total = (horas_dif + 1) * precio
 					else:
 						total = (horas_dif) * precio
 
 					system('cls')
-					print("\n\t************************************************"
+					print("\n\tPrevisualizacion del cobro."
+						"\n\tVerifique los datos antes de hacer el cobro del parqueadero"
+						"\n\t************************************************"
 						f"\n\t\t- TICKET ZONA {parqueo.id_parqueo} -"
 						"\n\t************************************************"
 						f"\n\tRegistro de ingreso:\t{fecha_ingreso}"
@@ -266,29 +272,51 @@ class Parqueadero:
 						f"\n\tNombre Propietario:\t{parqueo.parqueo_vehiculo[5]}"
 						f"\n\tRegistro de salida:\t{tiempo}"
 						f"\n\tTotal de tiempo:\t{horas_dif} horas, {minutos_dif} minutos"
-						f"\n\tValor Hora/Fraccion:\t${precio} pesos"
-						f"\n\tTotal a pagar:\t\t${total} pesos"
-						"\n\t---------------------------------------------------------"
-						"\n\t¡Gracias por utilizar nuestro servicio!"
-						"\n\tRecuerde mostrar este tikect a la salida"
-						)
+						f"\n\tValor Hora/Fraccion:\t$ {precio} pesos"
+						f"\n\tTotal a pagar:\t\t$ {total} pesos")
 
-					datos = self.reporte_lista
+					mensaje = "\t¿Desea realizar el cobro del parqueadero?"
+					valor = self.confirmacion(mensaje)
 
-					for i in range(len(datos)):
-						if self.reporte_lista[i][0] == parqueo.id_parqueo and self.reporte_lista[i][2] == parqueo.placa_parqueo:
-							self.reporte_lista[i][5] = tiempo 
-							self.reporte_lista[i][6] = f"{horas_dif} horas, {minutos_dif} minutos"
-							self.reporte_lista[i][7] = total
+					if valor == 1:
 
-					del self.parqueos_lista[elemento]					
+						system('cls')
+						print("\n\t************************************************"
+							f"\n\t\t- TICKET ZONA {parqueo.id_parqueo} -"
+							"\n\t************************************************"
+							f"\n\tRegistro de ingreso:\t{fecha_ingreso}"
+							f"\n\tPlaca del vehiculo:\t{parqueo.placa_parqueo}"
+							f"\n\tNombre Propietario:\t{parqueo.parqueo_vehiculo[5]}"
+							f"\n\tRegistro de salida:\t{tiempo}"
+							f"\n\tTotal de tiempo:\t{horas_dif} horas, {minutos_dif} minutos"
+							f"\n\tValor Hora/Fraccion:\t${precio} pesos"
+							f"\n\tTotal a pagar:\t\t${total} pesos"
+							"\n\t---------------------------------------------------------"
+							"\n\t¡Gracias por utilizar nuestro servicio!"
+							"\n\tRecuerde mostrar este tikect a la salida")
+
+						datos = self.reporte_lista
+
+						for i in range(len(datos)):
+							if self.reporte_lista[i][9] == 1:
+								self.reporte_lista[i][9] = 0
+
+							if self.reporte_lista[i][0] == parqueo.id_parqueo and self.reporte_lista[i][3] == parqueo.placa_parqueo:
+								self.reporte_lista[i][5] = tiempo 
+								self.reporte_lista[i][6] = f"{horas_dif} horas, {minutos_dif} minutos"
+								self.reporte_lista[i][8] = total
+								self.reporte_lista[i][9] = 1
+
+						del self.parqueos_lista[elemento]	
+		
+					else:
+						print("\n\tSe cancelo el cobro del parqueadero")				
 				
 				elif unidad == 0:
 					print(hora_usuario)
 
-
 			else:
-				print("\n\tSe cancelo la creacion del vehiculo")
+				print("\n\tSe cancelo la salida del vehiculo")
 
 		
 #-----------------------------------------------------------------------------------------------------------------------
@@ -384,11 +412,6 @@ class Parqueadero:
 			self.parqueos_lista[posicion].visualizar_parqueo()
 
 
-			
-
-
-
-
 #-------------------------------------------------------------------------------------------------------------------
 	
 	def modificar_general(self, posicion, indice):
@@ -459,10 +482,22 @@ class Parqueadero:
 
 		if indice == "Propietario":
 
+			print("\tRecuerde..."
+				"\n\tAl realizar la eliminacion del propietario,"
+				"\n\ttodo vinculo que tenga el propietario tambien sera eliminado."
+				"\n\tEsta accion tendra efectos a las acciones futuras.")
+
 			mensaje = "\t¿Desea eliminar este propietario del sistema?"
 			valor = self.confirmacion(mensaje)
 
 			if valor == 1:
+
+				propio = self.propietarios_lista[posicion]
+
+				for i in range(len(self.vehiculos_lista)):
+
+					if self.vehiculos_lista[i].id_propietario_vehiculo == propio.id_propietario:
+						del self.vehiculos_lista[i]
 
 				del self.propietarios_lista[posicion]
 
@@ -487,18 +522,21 @@ class Parqueadero:
 
 		elif indice == "Parqueo":
 
-			mensaje = "\t¿Desea eliminar esta zona de parqueo del sistema?"
+			mensaje = "\t¿Desea anular la entrada de este vehiculo?"
 			
 			valor = self.confirmacion(mensaje)
 
 			if valor == 1:
+				ultima = len(self.reporte_lista) - 1
 
-				del self.parqueos_lista[posicion]
+				self.reporte_lista[ultima][2] = "ANULADA"
 
-				print("\n\tSe ha eliminado a el vehiculo elegido")
+				del self.parqueos_lista[posicion]	
+
+				print("\n\tSe ha anulado el ingreso del vehiculo, ya puede continuar con el registro")
 
 			else:
-				print("\n\tSe cancelo la eliminacion del vehiculo") 
+				print("\n\tSe cancelo la anulacion de la entrada del vehiculo del sistema") 
 
 
 # ---------------------------------------------------------------------
@@ -515,15 +553,17 @@ class Parqueadero:
 			pos = 0
 			salida = 0
 
-			# parque_datos.append(zona)
-			# parque_datos.append(fecha_ingreso)
-			# parque_datos.append(tipo)
-			# parque_datos.append(placa)
-			# parque_datos.append(nombre_propietario)
-			# parque_datos.append("Registro salida")
-			# parque_datos.append("Tiempo Total")
-			# parque_datos.append(0)
-
+			# for i in range(total):
+			# 	print(f"\n\t0:\t{self.reporte_lista[i][0]} "
+			# 		f"\n\t1:\t{self.reporte_lista[i][1]} "
+			# 		f"\n\t2:\t{self.reporte_lista[i][2]} "
+			# 		f"\n\t3:\t{self.reporte_lista[i][3]} "
+			# 		f"\n\t4:\t{self.reporte_lista[i][4]} "
+			# 		f"\n\t5:\t{self.reporte_lista[i][5]} "
+			# 		f"\n\t6:\t{self.reporte_lista[i][6]} "
+			# 		f"\n\t7:\t{self.reporte_lista[i][7]} "
+			# 		f"\n\t8:\t{self.reporte_lista[i][8]} "
+			# 		f"\n\t9:\t{self.reporte_lista[i][9]} ")
 
 			if total > 0:
 
@@ -539,12 +579,12 @@ class Parqueadero:
 					elif self.reporte_lista[i][2] == "ANULADA":
 						anulada += 1
 
-					if self.reporte_lista[i][7] > 0:
+					if self.reporte_lista[i][8] > 0 and self.reporte_lista[i][9] == 1:						
 						pos = i
 						salida += 1
 
-				if pos != 0:
-					ultima = self.reporte_lista[pos - 1][5]
+				
+				ultima = self.reporte_lista[pos][5]
 
 			if vehi == 1:
 				vehi = "1 Automovil"
@@ -552,7 +592,7 @@ class Parqueadero:
 				vehi = f"{vehi} Automoviles"
 
 			if moto == 1:
-				moto = "\t1 Motocicleta"
+				moto = "1 Motocicleta"
 			else:
 				moto = f"{moto} Motocicletas"
 
@@ -561,30 +601,137 @@ class Parqueadero:
 			else:
 				anulada = f"{anulada} Anulaciones"
 
-
-
-
+			
 
 			if total == 0:
 				print(f"\tEl sistema aun no tiene registros.")
 			
 			elif total == 1:	
 				print(f"\tEl sistema tiene 1 solo registro, de los cuales se considera lo siguiente;"
-					f"\n\tHasta el momento han ingresado {vehi}, {moto} y se tiene {anulada}")
-				if pos == 0:
-					print("\tAun no se registra salidas")
+					f"\n\n\tHasta el momento han ingresado {vehi}, {moto} y se tiene {anulada}")
+				
+				if salida == 0:
+					print(f"\tLa primera entrada fue regitrada: {primer}"
+						"\n\tAun no se registra salidas")
 				else:
-					print(f"\n\tLa ultima salida fue {ultima}")				
-			
+					print(f"\tLa primera entrada fue regitrada: {primer}"
+						f"\n\tLa ultima salida reportada fue: {ultima}")
+
 			else:
 				print(f"\tEl sistema tiene {total} registros, de los cuales se considera lo siguiente;"
-					f"\n\tHasta el momento han ingresado {vehi}, {moto} y se tiene {anulada}")
-				if ultima == 0:
-					print("\tAun no se registra salidas")
+					f"\n\n\tHasta el momento han ingresado {vehi}, {moto} y se tiene {anulada}")
+				
+				if salida == 0:
+					print(f"\tLa primera entrada fue regitrada: {primer}"
+						"\n\tAun no se registra salidas")
 				else:
-					print(f"\n\tLa ultima salida fue {ultima}")
+					print(f"\tLa primera entrada fue regitrada: {primer}"
+						f"\n\tLa ultima salida reportada fue: {ultima}")
 
-			print("\t\t¡Gracias por utilizar nuestro servicio!")
+			print("\n\t\t¡Gracias por utilizar nuestro servicio!")
+
+		elif numero == 2:
+
+			lista  = self.parqueos_lista
+			vehi = 0
+			moto = 0
+
+			for i in range(len(lista)):
+				if self.parqueos_lista[i].parqueo_vehiculo[0] == "AUTOMOVIL":
+					vehi += 1
+				elif self.parqueos_lista[i].parqueo_vehiculo[0] == "MOTOCICLETA":
+					moto += 1
+
+			total = vehi + moto
+
+			if total == 0:
+				print(f"\tEn el momento tiene un total de 20 parqueos disponibles,"
+					"\n\t10 para Automoviles y 10 para Motocicletas")
+			else:
+				print(f"\tEn el momento tiene un total de {20 - total} parqueos disponibles, de la siguinete forma:")
+
+				if vehi == 9:
+					print (f"\tAutomoviles:\t1 zona Disponible")
+				else:
+					print (f"\tAutomoviles:\t{10 - vehi} zonas Disponibles")
+
+				if moto == 9:
+					print (f"\tMotocicletas:\t1 zona Disponible ")
+				else:
+					print (f"\tMotocicletas:\t{10 - moto} zonas Disponibles ")
+
+
+		elif numero == 3:
+
+			total = len(self.reporte_lista)
+			vehi = 0
+			moto = 0
+			valor_vehiculo = 0
+			valor_moto = 0
+			total_parqueadero = 0
+			
+			if total > 0:
+
+				# primer = self.reporte_lista[0][1]
+
+				for i in range(total):
+
+					if self.reporte_lista[i][2] == "AUTOMOVIL" and self.reporte_lista[i][8] > 0:
+						vehi += 1
+						valor_vehiculo += self.reporte_lista[i][8]
+					
+					elif self.reporte_lista[i][2] == "MOTOCICLETA" and self.reporte_lista[i][8] > 0:
+						moto += 1
+						valor_moto += self.reporte_lista[i][8]	
+
+			total_parqueadero = valor_vehiculo + valor_moto			
+
+			if vehi == 1:
+				vehi = "1 Automovil"
+			else:
+				vehi = f"{vehi} Automoviles"
+
+			if moto == 1:
+				moto = "1 Motocicleta"
+			else:
+				moto = f"{moto} Motocicletas"			
+
+			if total == 0:
+				print(f"\tEl sistema aun no tiene registros de ingresos de vehiculos.")
+			
+			elif total == 1:	
+				print(f"\tEl sistema tiene 1 solo registro de ingreso de vehiculos"
+					f"\n\tde lo cual se considera lo siguiente:")
+
+			else:
+				print(f"\tEl sistema tiene {total} registros de ingreso de vehiculos"
+					f"\n\tde lo cual se considera lo siguiente:")
+
+
+			if total_parqueadero == 0:
+				print("\tAun no se registra salidas")
+
+			else:
+				print("\t==============================================================="
+					f"\n\tCantidad de salida de Automoviles:\t{vehi}"
+					f"\n\tSubtotal del cobro de parqueaderos:\t$ {valor_vehiculo}"
+					f"\n\tCantidad de salida de Automoviles:\t{moto}"
+					f"\n\tSubtotal del cobro de parqueaderos:\t$ {valor_moto}"
+					f"\n\t-----------------------------------------------------------")
+
+				if (moto + vehi) == 1:
+					print(f"\tHasta el momento se ha registrado el pago de un vehiculo")
+
+				else:
+					print(f"\tHasta el momento se ha registrado el pago de {moto + vehi} vehiculos")
+
+				print(f"\tTotal del cobro de parqueaderos:\t$ {total_parqueadero}")				
+
+			print("\n\t\t¡Gracias por utilizar nuestro servicio!")
+
+
+
+
 
 
 

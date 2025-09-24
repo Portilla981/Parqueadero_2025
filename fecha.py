@@ -109,9 +109,11 @@ class Fecha:
 			else:
 				print("\n\tEl mes ingresado es menor a la fecha actual, o tiene valores no válidos."
 					"\n\tVerifique e intente nuevamente")
+				return False
 		else:
 			print("\n\tLa fecha ingresada es menor a la del sistema, o tiene valores no válidos."
 				"\n\tVerifique e intente nuevamente")
+			return False
 
 
 		if verifica == 1:
@@ -125,9 +127,11 @@ class Fecha:
 			
 			else:
 				print("\tLos valores ingresados están por fuera de los rangos de fecha")
+				return False
 
 		else:
 			print("\n\tNo se puede cargar la fecha")
+			return False
 
 	def crear_hora(self, fecha):
 
