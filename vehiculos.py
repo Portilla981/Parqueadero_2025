@@ -12,9 +12,9 @@ class Vehiculo:
 		self.nombre_propietario_vehiculo = nombre_propietario
 
 		if tipo == 1:
-			self.tipo_vehiculo = "Automovil"
+			self.tipo_vehiculo = "AUTOMOVIL"
 		elif tipo == 2:
-			self.tipo_vehiculo = "Motocicleta"
+			self.tipo_vehiculo = "MOTOCICLETA"
 	
 
 	def validar_placa(self, placa, tipo):

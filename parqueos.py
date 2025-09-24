@@ -19,6 +19,7 @@ class Parqueo:
 			f"\tModelo del Vehiculo:\t\t\t{self.parqueo_vehiculo[2]}\n"
 			f"\tColor del Vehiculo:\t\t\t{self.parqueo_vehiculo[3]}\n"
 			f"\tID del propietario del Vehiculo:\t{self.parqueo_vehiculo[4]}\n"
-			f"\tNombre del propietario del Vehiculo:\t{self.parqueo_vehiculo[5]}\n")
+			f"\tNombre del propietario del Vehiculo:\t{self.parqueo_vehiculo[5]}\n"
+			f"\tValor de la Hora/Fraccion vehiculo:\t$ {self.parqueo_vehiculo[6]}\n")
 	
 		

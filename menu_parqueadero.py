@@ -158,17 +158,7 @@ class Menu:
 
 								if pos_propietario != -1:
 
-									mensaje = "\t¿Desea eliminar este propietario del sistema?"
-									valor = self.parqueadero.confirmacion(mensaje)
-
-									if valor == 1:
-
-										del self.parqueadero.propietarios_lista[pos_propietario]
-
-										print("\n\tSe ha eliminado a el propietario elegido")
-
-									else:
-										print("\n\tSe cancelo la eliminacion del propietario") 
+									self.parqueadero.eliminar_general(pos_propietario, indice)									
 									
 								else:
 									print(f"\n\tEl numero de identificacion {codigo}, No está registrado en el sistema.")
@@ -350,17 +340,7 @@ class Menu:
 
 								if pos_vehiculo != -1:
 
-									mensaje = "\t¿Desea eliminar este vehiculo del sistema?"
-									valor = self.parqueadero.confirmacion(mensaje)
-
-									if valor == 1:
-
-										del self.parqueadero.vehiculos_lista[pos_vehiculo]
-
-										print("\n\tSe ha eliminado el vehiculo elegido")
-
-									else:
-										print("\n\tSe cancelo la eliminacion del vehiculo") 
+									self.parqueadero.eliminar_general(pos_vehiculo, inidice)
 									
 								else:
 									print(f"\n\tLa placa {placa}, No está registrado en el sistema.")
@@ -396,8 +376,7 @@ class Menu:
 							"\n\t****** 1. Registrar Parqueo "
 							"\n\t****** 2. Listar Parqueos "
 							"\n\t****** 3. Visualizar Parqueo "
-							"\n\t****** 4. Modificar Parqueo "
-							"\n\t****** 5. Eliminar Parqueo "
+							"\n\t****** 4. Anular Parqueo "
 							"\n\t****** 0. Volver al menú inicial ")
 						
 						try:
@@ -409,76 +388,78 @@ class Menu:
 									"\n\t\t- MÓDULO REGISTRAR PARQUEO -"
 									"\n\t************************************************")
 
-								if len(self.parqueadero.parqueos_lista) <= 10:
+								try:
+									tipo = int(input("\tEscoja una de las siguientes opciones"
+										"\n\t1). Registrar Parqueo del Vehiculo"
+										"\n\t2). Registrar Salida del Vehiculo"
+										"\n\t0). Salir del modulo"
+										"\n\topcion: "))
 
-									try:
-										tipo = int(input("\tEscoja una de las siguientes opciones"
-											"\n\t1). Registrar Parqueo del Vehiculo"
-											"\n\t2). Registrar Salida del Vehiculo"
-											"\n\t0). Salir del modulo"
-											"\n\topcion: "))
+									if tipo == 1:
 
+										try:
 
-										if tipo == 1:
+											tipo = int(input("\tEscoja una de las opciones para el tipo de Vehiculo"
+												"\n\t1). Vehiculo"
+												"\n\t2). Motocicleta"
+												"\n\t0). Salir del modulo"
+												"\n\topcion: "))
 
-											codigo = str(input("\tIngrese el codigo del parqueo: ")).strip().upper()
-											while codigo == "":
-												codigo = str(input("\tEl dato ingresado es vacio."
-													"\n\tIngrese el codigo del parqueo: ")).strip().upper()
+											if tipo == 0:
+												break
 
-											pos_parqueo = self.parqueadero.busqueda_general(codigo, indice)
-
-											if pos_parqueo == -1:
-
-												self.parqueadero.registrar_general(codigo, indice)	
-
-											else:
-												print(f"\n\tEl codigo del parqueo {codigo}, ya existe.")
-
-										elif tipo == 2:
-
-											placa = str(input("\tIngrese la placa del vehiculo para registrar la salida: ")).strip().upper()								
-
-											pos_vehiculo = self.parqueadero.busqueda_general(placa, "Vehiculo")
-
-											if pos_vehiculo != -1:
-
-												lugar = ""
-
-												for i in range(len(self.parqueadero.parqueos_lista)):
-													print(self.parqueadero.parqueos_lista[i].placa_parqueo)
-													if self.parqueadero.parqueos_lista[i].placa_parqueo == placa:						
-														lugar = i														
-
-												if lugar != "":
-
-													self.parqueadero.registrar_general(lugar, "Salida")
-													
-												else:
-													print(f"\n\tLa placa {placa}, No está registrado en el sistema.2")
+											elif tipo == 1 or tipo == 2:
+												self.parqueadero.registrar_general(tipo, indice)	
 
 											else:
-												print(f"\n\tLa placa {placa}, No está registrado en el sistema.")											
+												print("\n\t************************************************"
+													"\n\t******     Error - Opción no valida       ******"
+													"\n\t************************************************")
 
-										elif tipo == 0:
-											break
-
-										else:
-											print("\n\t************************************************"
-												"\n\t******     Error - Opción no valida       ******"
+										except ValueError:
+											print("\t************************************************"
+												"\n\t***  Error - El dato ingresado no es válido  ***"
 												"\n\t************************************************")
 
-									except ValueError:
-										print("\t************************************************"
-											"\n\t***  Error - El dato ingresado no es válido  ***"
+
+									elif tipo == 2:
+
+										placa = str(input("\tIngrese la placa del vehiculo para registrar la salida: ")).strip().upper()								
+
+										pos_vehiculo = self.parqueadero.busqueda_general(placa, "Vehiculo")
+
+										if pos_vehiculo != -1:
+
+											lugar = ""
+
+											for i in range(len(self.parqueadero.parqueos_lista)):
+												# print(self.parqueadero.parqueos_lista[i].placa_parqueo)
+												if self.parqueadero.parqueos_lista[i].placa_parqueo == placa:						
+													lugar = i														
+
+											if lugar != "":
+
+												self.parqueadero.registrar_general(lugar, "Salida")
+												
+											else:
+												print(f"\n\tLa placa {placa}, No está registrado en el sistema.2")
+
+										else:
+											print(f"\n\tLa placa {placa}, No está registrado en el sistema.")											
+
+									elif tipo == 0:
+										break
+
+									else:
+										print("\n\t************************************************"
+											"\n\t******     Error - Opción no valida       ******"
 											"\n\t************************************************")
-									
-								else:
-									print(f"\n\tEl Parqueadero no tiene parqueos disponibles.")
 
-								# input("\n\t¡Presione alguna tecla para continuar!")
-
-
+								except ValueError:
+									print("\t************************************************"
+										"\n\t***  Error - El dato ingresado no es válido  ***"
+										"\n\t************************************************")							
+						
 							elif opcion == 2:
 								system('cls')
 								print("\n\t************************************************"
@@ -515,21 +496,14 @@ class Menu:
 								else:
 									print(f"\n\tLa placa {placa}, No está registrado en el sistema.")
 
-
-
-
-
 							elif opcion == 4:
 								system('cls')
 								print("\n\t************************************************"
-									"\n\t\t- MÓDULO MODIFICAR PARQUEO -"
+									"\n\t\t- MÓDULO ANULAR PARQUEO -"
 									"\n\t************************************************")
 
-							elif opcion == 5:
-								system('cls')
-								print("\n\t************************************************"
-									"\n\t\t- MÓDULO ELIMINAR PARQUEO -"
-									"\n\t************************************************")
+								self.parqueadero.eliminar_general('anular', inidice)
+							
 
 							elif opcion == 0:
 								print("\n\t********************************************************"
@@ -557,22 +531,80 @@ class Menu:
 					"\n\t\t- MÓDULO PARQUEOS OCUPADOS -"
 					"\n\t************************************************")
 
+					lista  = self.parqueadero.parqueos_lista
+					vehi = 0
+					moto = 0
+
+					for i in range(len(lista)):
+						if self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "AUTOMOVIL":
+							vehi += 1
+						elif self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "MOTOCICLETA":
+							moto += 1
+
+					total = vehi + moto
+
+					if total == 0:
+						print(f"\tEn el momento No tiene parqueos ocupados")
+					
+					else:
+						print(f"\tEn el momento tiene un total de {vehi + moto} parqueos ocupado, de la siguinete forma:")
+						
+						if vehi == 1: 
+							print (f"\tAutomoviles:\t1 zona Ocupada")
+						else:
+							print (f"\tAutomoviles:\t{vehi} zonas Ocupadas")
+
+						if moto == 1:
+							print (f"\tMotocicletas:\t1 zona Ocupada")
+						else:
+							print (f"\tMotocicletas:\t{moto} zonas Ocupadas")
+
+
+
 				elif opcion == 5:
 					system('cls')
 					print("\n\t************************************************"
 					"\n\t\t- MÓDULO PARQUEOS DISPONIBLES -"
 					"\n\t************************************************")
 
+					lista  = self.parqueadero.parqueos_lista
+					vehi = 0
+					moto = 0
+
+					for i in range(len(lista)):
+						if self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "AUTOMOVIL":
+							vehi += 1
+						elif self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "MOTOCICLETA":
+							moto += 1
+
+					total = vehi + moto
+
+					if total == 0:
+						print(f"\tEn el momento tiene un total de 20 parqueos disponibles,"
+							"\n\t10 para Automoviles y 10 para Motocicletas")
+					else:
+						print(f"\tEn el momento tiene un total de {20 - total} parqueos disponibles, de la siguinete forma:")
+
+						if vehi == 9:
+							print (f"\tAutomoviles:\t1 zona Disponible")
+						else:
+							print (f"\tAutomoviles:\t{10 - vehi} zonas Disponibles")
+
+						if moto == 9:
+							print (f"\tMotocicletas:\t1 zona Disponible ")
+						else:
+							print (f"\tMotocicletas:\t{10 - moto} zonas Disponibles ")
+					
+
 				elif opcion == 6:
 
 					while True:
 						system('cls')
 						print("\t************************************************"
-							"\n\t- OPCIONES PARA REPORTES -"
+							"\n\t\t- OPCIONES PARA REPORTES -"
 							"\n\t************************************************"
-							"\n\t****** 1. Reporte de cantidad de Vehiculos parqueados"
-							"\n\t****** 2. Reporte de cantidad de espacios disponibles para parqueo"
-							"\n\t****** 3. Reporte de pagos recibidos por parqueo"
+							"\n\t****** 1. Reporte de registro cantidad de Vehiculos parqueados"
+							"\n\t****** 2. Reporte de pagos recibidos por parqueo"
 							"\n\t****** 0. Volver al menú inicial ")
 						
 						try:
@@ -581,21 +613,19 @@ class Menu:
 							if opcion == 1:
 								system('cls')
 								print("\n\t************************************************"
-									"\n\t\t- REPORTE CANTIDAD DE VEHICULOS PARQUEADOS -"
+									"\n\t- REPORTE CANTIDAD DE VEHICULOS PARQUEADOS -"
 									"\n\t************************************************")
 
+								self.parqueadero.reporte_general(1)
+
+							
 							elif opcion == 2:
 								system('cls')
 								print("\n\t************************************************"
-									"\n\t\t- REPORTE CANTIDAD DE ESPACIOS DISPONIBLES -"
+									"\n\t- REPORTE PAGOS RECIBIDOS POR PARQUEO -"
 									"\n\t************************************************")
 
-
-							elif opcion == 3:
-								system('cls')
-								print("\n\t************************************************"
-									"\n\t\t- REPORTE PAGOS RECIBIDOS POR PARQUEO -"
-									"\n\t************************************************")
+								self.parqueadero.reporte_general(2)
 
 
 							elif opcion == 0:
@@ -614,6 +644,7 @@ class Menu:
 							print("\t************************************************"
 								"\n\t***  Error - El dato ingresado no es válido  ***"
 								"\n\t************************************************")
+						input("\n\t¡Presione alguna tecla para continuar!")
 
 				elif opcion == 0:
 					print("\n\t********************************************************"

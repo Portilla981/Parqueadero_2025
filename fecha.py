@@ -85,7 +85,7 @@ class Fecha:
 		fecha_actual = datetime.now()
 		
 		# Solicitudes al usuario
-		print("\n\tIngrese los siguientes datos: ") 
+		print("\tIngrese los siguientes datos: ") 
 		anio = int(input("\tDigite el año: "))
 		mes = int(input("\tDigite el mes: "))
 		dia = int(input("\tDigite el día: "))
@@ -146,22 +146,28 @@ class Fecha:
 			minuto = int(input("\tLos minutos ingresados no son validos"
 				"\n\tIngrese los minutos: "))
 
+		fecha = datetime.strptime(fecha, "%Y-%m-%d") 
 
-		if fecha > fecha_actual:
-			return f"{hora}:{minuto}:00"
+		if fecha.date() > fecha_actual.date():
+			
+			accion = f"{hora}:{minuto}:00" 
+			return accion , 1
 
 
-		elif fecha == fecha_actual:
-			if hora >= ahora.hour:
-				if minuto > ahora.minute
-					return f"{hora}:{minuto}:00"
-
+		elif fecha.date() == fecha_actual.date():
+			if hora > ahora.hour:
+				accion = f"{hora}:{minuto}:00" 
+				return accion , 1
+			elif hora == ahora.hour:
+				if minuto > ahora.minute:
+					accion = f"{hora}:{minuto}:00" 
+					return accion, 1
 				else:
-					print("\n\tLa hora ingresada no es valida."
-					"\n\tVerifique e intente nuevamente")
+					accion = "\n\tLa hora ingresada no es valida.""\n\tVerifique e intente nuevamente"
+					return accion, 0
 			else:
-				print("\n\tLa hora ingresada no es valida."
-				"\n\tVerifique e intente nuevamente")
+				accion = "\n\tLa hora ingresada no es valida.""\n\tVerifique e intente nuevamente"
+				return accion, 0
 		
 
 
