@@ -151,7 +151,8 @@ class Parqueadero:
 						print("no hay consecutivo")					
 
 				
-				# Obtiene fecha y hora actaul para el registro de ingreso.
+				# Obtiene fecha y hora actaul para el registro de ingreso tomando de la libreria de datetime la funcion
+				# de convertir una fecha u hora en string (strftime).
 				hoy = date.today()
 				ahora = datetime.now()
 				ahora = ahora.strftime("%H:%M:%S")
@@ -568,7 +569,7 @@ class Parqueadero:
 			if valor == 1:
 
 				# Elimina el vehículo de la lista
-				del self.vehiculo_lista[posicion]
+				del self.vehiculos_lista[posicion]
 
 				print("\n\tSe ha eliminado a el vehiculo elegido")
 

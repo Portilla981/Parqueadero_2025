@@ -94,7 +94,8 @@ class Menu:
 
 									# Teléfono → strip elimina espacios y se valida que sean solo números
 									telefono = str(input("\tIngrese el número telefónico del propietario: ")).strip()
-									while telefono.isdigit() == False:
+
+									while telefono.isdigit() == False or len(telefono) != 10:
 										telefono = str(input("\tEl dato ingresado no es un número telefónico."
 											"\n\tIngrese el número telefónico del propietario: ")).strip()
 
@@ -246,6 +247,10 @@ class Menu:
 									elif tipo == 1 or tipo == 2:
 
 										# Se pide la placa → strip() elimina espacios, upper() lo pone en MAYÚSCULAS
+										if tipo == 1:
+											print("\tRecuerde que para el registro de placa debe seguir este modelo \"ABC 255\" ")
+										elif tipo == 2:
+											print("\tRecuerde que para el registro de placa debe seguir este modelo \"ABC 55\" ")
 										placa = str(input("\tIngrese la identificacion de la placa del vehiculo a registrar: ")).strip().upper()
 
 										# Se valida que la placa cumpla el formato según el tipo de vehículo
@@ -382,7 +387,7 @@ class Menu:
 								if pos_vehiculo != -1:
 
 									# Si se encuentra la posición en la lista → se elimina
-									self.parqueadero.eliminar_general(pos_vehiculo, inidice)
+									self.parqueadero.eliminar_general(pos_vehiculo, indice)
 									
 								else:
 									print(f"\n\tLa placa {placa}, No está registrado en el sistema.")
