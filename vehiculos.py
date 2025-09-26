@@ -1,9 +1,12 @@
-import re
+import re # Libreria para trabajar con expresiones regulares (validación de email y placas)
 from os import system 
 
+# Clase principal 
 class Vehiculo:
 
+	# Constructor de la clase
 	def __init__(self, placa, marca, modelo, color, id_propietario, nombre_propietario, tipo):
+		#Atributos
 		self.placa_vehiculo = placa
 		self.marca_vehiculo = marca
 		self.modelo_vehiculo = modelo
@@ -49,6 +52,7 @@ class Vehiculo:
 			else:
 				return False
 
+	# Muestra todos los datos del propietario 
 	def visualizar_vehiculo(self):
 
 		print(f"\n\tPlaca del Vehiculo:\t\t\t{self.placa_vehiculo}\n"
@@ -62,8 +66,11 @@ class Vehiculo:
 
 	def modificar_vehiculo(self):
 
+		#Blucle
 		while True:
 			system('cls')
+
+			#Menú de opciones para modificar los datos del vehiculo
 			print("\n\t**************************************************"
 				f"\n\t- Se modificara el Vehiculo de placas {self.placa_vehiculo} -"
 				"\n\t****************************************************"
@@ -83,15 +90,19 @@ class Vehiculo:
 				if opcion == 1:
 
 					print("\n\t\t- Datos almacenadados -"
-						"\n\t==========================================================")	
+						"\n\t==========================================================")
+					#Llama metodo visualizar_vehiculo	
 					self.visualizar_vehiculo()
 
 				elif opcion == 2:
+					# strip() → elimina espacios al inicio/fin
+					# upper() → convierte todo a MAYÚSCULAS
 					marca = str(input("\tIngrese la nueva marca del Vehiculo: ")).strip().upper()
-					while marca == "":
+					while marca == "": # Validación de campo vacío
 						marca = str(input("\tEl dato ingresado está vacío"
 							"\n\tIngrese la nueva marca del Vehiculo: ")).strip().upper()
 
+					# Mensaje de confirmación para guardar el cambio
 					if self.confirmacion() == 1:
 						self.marca_vehiculo = marca
 						print("\n\tLa nueva del Vehiculo fue modificada exitosamente.")
@@ -101,11 +112,14 @@ class Vehiculo:
 
 				elif opcion == 3:
 
+					# strip() → elimina espacios al inicio/fin
+					# upper() → convierte todo a MAYÚSCULAS
 					modelo = str(input("\tIngrese el nuevo modelo del Vehiculo: ")).strip().upper()
-					while modelo == "":
+					while modelo == "": # Validación de campo vacío
 						modelo = str(input("\tEl dato ingresado está vacío"
 							"\n\tIngrese el nuevo modelo del Vehiculo: ")).strip().upper()
 
+					# Mensaje de confirmación para guardar el cambio
 					if self.confirmacion() == 1:
 						self.modelo_vehiculo = modelo
 						print("\n\tEl modelo del vehiculo fue modificado exitosamente.")
@@ -114,11 +128,14 @@ class Vehiculo:
 						break
 
 				elif opcion == 4:
+					# strip() → elimina espacios al inicio/fin
+					# upper() → convierte todo a MAYÚSCULAS
 					color = str(input("\tIngrese el nuevo color del Vehiculo: ")).strip().upper()
-					while color == "":
+					while color == "": # Validación de campo vacío
 						color = str(input("\tEl dato ingresado está vacío"
 							"\n\tIngrese el nuevo color del Vehiculo: ")).strip().upper()
-
+					
+					# Mensaje de confirmación para guardar el cambio
 					if self.confirmacion() == 1:
 						self.color_vehiculo = color
 						print("\n\tEl color del vehiculo fue modificado exitosamente.")
@@ -147,7 +164,7 @@ class Vehiculo:
 
 	
 	def confirmacion(self):
-
+		#Mensaje de confirmación.
 		while True:
 			
 			print("\n\t¿Desea guardar los cambios realizados?"

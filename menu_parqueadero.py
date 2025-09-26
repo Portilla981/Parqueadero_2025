@@ -1,21 +1,30 @@
+# Importación de módulos del sistema
 from os import system 
 from parqueadero import Parqueadero
 from propietarios import Propietario
 from vehiculos import Vehiculo
 
-
+# Clase principal Menu
 class Menu:
 
+	#Constructor de la clase
 	def __init__ (self):
+
+		# Se instancia un objeto de la clase Parqueadero,
+        # que servirá como base de datos en memoria para propietarios, vehículos y parqueos
 		self.parqueadero = Parqueadero()
 		
 		
-	
+	# Método principal que muestra el menú del sistema
 	def mostrar_menu_parqueadero(self):
 
+		# Bucle principal
 		while True:
+
+			#limpia la pantalla cada que se ejecute el metodo
 			system('cls')
 
+			# Menú principal 
 			print("\t************************************************"
 				"\n\t\t- PARQUEADERO SENA 2025 -"
 				"\n\t************************************************"
@@ -32,9 +41,10 @@ class Menu:
 			try:
 				opcion = int(input("\tDigité la opción deseada: "))
 
+				# Submenu de propiertarios
 				if opcion == 1:
 
-					indice = "Propietario"
+					indice = "Propietario" # Define el índice a usar en búsquedas
 
 					while True:
 						system('cls')
@@ -56,18 +66,23 @@ class Menu:
 								print("\n\t************************************************"
 									"\n\t\t- MÓDULO REGISTRAR PROPIETARIOS -"
 									"\n\t************************************************")
+								
 
+								# Se pide el documento de identidad y se valida que sea numérico
 								codigo = str(input("\tIngrese el numero de identificacion del propietario: "))
 								while codigo.isdigit() == False:
 									codigo = str(input("\tEl dato ingresado no es un número de identificacion."
 										"\n\tIngrese el numero de identificacion del propietario: "))
 
+								# Verificación si el propietario ya existe
 								pos_propietario = self.parqueadero.busqueda_general(codigo, indice)
 
 								if pos_propietario == -1:
-
+									# Se le pide el nombre del propietario
+									# strip() → elimina espacios al inicio/fin
+									# upper() → convierte todo a MAYÚSCULAS
 									nombre = str(input("\tIngrese el nombre del propietario: ")).strip().upper()
-									while nombre == "":
+									while nombre == "": # Validación: no vacío
 										nombre = str(input("\tEl dato ingresado está vacío"
 											"\n\tIngrese el nombre del propietario: ")).strip().upper()
 
@@ -77,21 +92,25 @@ class Menu:
 										apellido = str(input("\tEl dato ingresado está vacío"
 											"\n\tIngrese el apellido del propietario: ")).strip().upper()
 
+									# Teléfono → strip elimina espacios y se valida que sean solo números
 									telefono = str(input("\tIngrese el número telefónico del propietario: ")).strip()
 									while telefono.isdigit() == False:
 										telefono = str(input("\tEl dato ingresado no es un número telefónico."
 											"\n\tIngrese el número telefónico del propietario: ")).strip()
 
 									
+									# Correo → strip elimina espacios y se valida formato de email con método validar_email()
 									correo = str(input("\tIngrese el email del propietario: ")).strip()
 									while self.parqueadero.validar_email(correo) == False:
 										correo = str(input("\tEl dato ingresado no es un email valido."
 											"\n\tIngrese el email del propietario: ")).strip()
 
+									# Confirmación antes de guardar los datos
 									mensaje = "\t¿Desea almacenar los datos del Propietario en el sistema?"
 									valor = self.parqueadero.confirmacion(mensaje)
 
 									if valor == 1:
+										# Se crea el objeto propietario y se registra
 										propietario = Propietario(codigo, nombre, apellido, telefono, correo)
 										self.parqueadero.registrar_general(propietario, indice)										
 
@@ -107,6 +126,7 @@ class Menu:
 									"\n\t\t- MÓDULO LISTAR PROPIETARIOS -"
 									"\n\t************************************************")
 
+								# Llama al método general de listar
 								self.parqueadero.listar_general(indice)
 
 							
@@ -115,16 +135,19 @@ class Menu:
 								print("\n\t************************************************"
 									"\n\t\t- MÓDULO VISUALIZAR PROPIETARIO -"
 									"\n\t************************************************")
-
+								# Se pide el número de identificación del propietario
 								codigo = str(input("\tIngrese el numero de identificacion del propietario: "))
 
+								# Se busca el propietario con el código
 								pos_propietario = self.parqueadero.busqueda_general(codigo, indice)
 
 								if pos_propietario != -1:
 
+									# Si lo encuentra, se muestran sus datos	
 									self.parqueadero.visualizar_general(pos_propietario, indice)
 
 								else:
+									# Si no existe, se muestra el mensaje notificando que no esta registrado
 									print(f"\n\tEl numero de identificacion {codigo}, No está registrado en el sistema.")
 
 							elif opcion == 4:
@@ -187,6 +210,7 @@ class Menu:
 
 					indice = "Vehiculo"
 
+					#Submenu de Vehiculos
 					while True:
 						system('cls')
 						print("\t************************************************"
@@ -209,6 +233,7 @@ class Menu:
 									"\n\t************************************************")
 
 								try:
+									# Se pide el tipo de vehículo: 
 									tipo = int(input("\tEscoja una de las opciones para el tipo de Vehiculo"
 										"\n\t1). Vehiculo"
 										"\n\t2). Motocicleta"
@@ -220,16 +245,20 @@ class Menu:
 
 									elif tipo == 1 or tipo == 2:
 
+										# Se pide la placa → strip() elimina espacios, upper() lo pone en MAYÚSCULAS
 										placa = str(input("\tIngrese la identificacion de la placa del vehiculo a registrar: ")).strip().upper()
 
+										# Se valida que la placa cumpla el formato según el tipo de vehículo
 										while self.parqueadero.validar_placa(placa, tipo) == False:
 											placa = str(input("\tLa placa ingresada no es validad."
 												"\n\tIngrese la identificacion de la placa del vehiculo a registrar: ")).strip().upper()
 
+										# Se busca si la placa ya está registrada
 										pos_vehiculo = self.parqueadero.busqueda_general(placa, indice)
 
-										if pos_vehiculo == -1:
+										if pos_vehiculo == -1: # Si no existe, se registran los datos
 
+											#strip() elimina espacios, upper() lo pone en MAYÚSCULAS
 											marca = str(input("\tIngrese la marca del Vehiculo: ")).strip().upper()
 											while marca == "":
 												marca = str(input("\tEl dato ingresado está vacío"
@@ -250,15 +279,19 @@ class Menu:
 												codigo = str(input("\tEl dato ingresado no es un número de identificacion."
 													"\n\tIngrese el numero de identificacion del propietario: ")).strip()
 
+											# Se busca si el propietario está registrado en la lista de Propietarios
 											pos_propietario = self.parqueadero.busqueda_general(codigo, "Propietario")
 
 											if pos_propietario != -1:
-
+												
+												# Si existe el propietario se muestra el nombre completo del propietario registrado
 												pro_vehiculo = f"{self.parqueadero.propietarios_lista[pos_propietario].nombre_propietario} {self.parqueadero.propietarios_lista[pos_propietario].apellido_propietario}"
 
+												# Confirmación antes de guardar los datos
 												mensaje = "\t¿Desea almacenar los datos del Vehiculo en el sistema?"
 												valor = self.parqueadero.confirmacion(mensaje)
-
+												
+												# Si confirma, se crea y guarda el objeto Vehiculo
 												if valor == 1:
 													vehiculo = Vehiculo(placa, marca, modelo, color, codigo, pro_vehiculo, tipo)
 													self.parqueadero.registrar_general(vehiculo, indice)										
@@ -290,6 +323,7 @@ class Menu:
 									"\n\t\t- MÓDULO LISTAR VEHICULOS -"
 									"\n\t************************************************")
 
+								# Se llama al método listar_general() → muestra todos los vehículos guardados
 								self.parqueadero.listar_general(indice)
 
 							elif opcion == 3:
@@ -298,12 +332,15 @@ class Menu:
 									"\n\t\t- MÓDULO VISUALIZAR VEHICULO -"
 									"\n\t************************************************")
 
+								#strip() elimina espacios, upper() la pone en MAYÚSCULAS
 								placa = str(input("\tIngrese la identificacion de la placa del vehiculo a visualizar: ")).strip().upper()								
 
+								# Se busca si la placa existe en la lista de vehículos
 								pos_vehiculo = self.parqueadero.busqueda_general(placa, indice)
 
 								if pos_vehiculo != -1:
 
+									# Si existe, se muestran sus datos
 									self.parqueadero.visualizar_general(pos_vehiculo, indice)
 
 								else:
@@ -316,13 +353,16 @@ class Menu:
 									"\n\t\t- MÓDULO MODIFICAR VEHICULO -"
 									"\n\t************************************************")
 
-
+								
+								# Se pide el número de identificación de la placa del vehiculo
 								placa = str(input("\tIngrese la identificacion de la placa del vehiculo que desea modificar: ")).strip().upper()								
 
+								# Se busca el vehiculo con la placa
 								pos_vehiculo = self.parqueadero.busqueda_general(placa, indice)
 
 								if pos_vehiculo != -1:
 
+									# Si lo encuentra, llama el metodo modificar
 									self.parqueadero.modificar_general(pos_vehiculo, indice)									
 									
 								else:
@@ -336,10 +376,12 @@ class Menu:
 
 								placa = str(input("\tIngrese la identificacion de la placa del vehiculo que desea eliminar: ")).strip().upper()								
 
+								# Buscar si el vehículo existe en la lista, según la placa
 								pos_vehiculo = self.parqueadero.busqueda_general(placa, indice)
 
 								if pos_vehiculo != -1:
 
+									# Si se encuentra la posición en la lista → se elimina
 									self.parqueadero.eliminar_general(pos_vehiculo, inidice)
 									
 								else:
@@ -409,6 +451,7 @@ class Menu:
 												break
 
 											elif tipo == 1 or tipo == 2:
+												# Llama al método general para registrar la entrada del vehículo
 												self.parqueadero.registrar_general(tipo, indice)	
 
 											else:
@@ -423,22 +466,26 @@ class Menu:
 
 
 									elif tipo == 2:
-
+										
+										# Se solicita la placa del vehículo que va a salir
 										placa = str(input("\tIngrese la placa del vehiculo para registrar la salida: ")).strip().upper()								
 
 										# pos_vehiculo = self.parqueadero.busqueda_general(placa, "Vehiculo")
 
 										# if pos_vehiculo != -1:
 
-										lugar = ""
+										lugar = "" # Aquí se guarda la posición del vehículo dentro de la lista de parqueos
 
+										# Se recorre toda la lista de parqueos ocupados
 										for i in range(len(self.parqueadero.parqueos_lista)):
 											# print(self.parqueadero.parqueos_lista[i].placa_parqueo)
+											# Si la placa del vehículo parqueado es igual a placa:
 											if self.parqueadero.parqueos_lista[i].placa_parqueo == placa:						
-												lugar = i														
+												lugar = i # Guarda la posición encontrada													
 
+										# Si se encontró el vehículo dentro de los parqueos
 										if lugar != "":
-
+											# Se registra la salida del vehículo en el sistema
 											self.parqueadero.registrar_general(lugar, "Salida")
 											
 										else:
@@ -466,6 +513,7 @@ class Menu:
 									"\n\t\t- MÓDULO LISTAR PARQUEOS -"
 									"\n\t************************************************")
 
+								# Llama al método general que lista todos los parqueos registrados
 								self.parqueadero.listar_general(indice)
 
 
@@ -477,17 +525,23 @@ class Menu:
 
 								placa = str(input("\tIngrese la placa del vehiculo para visualizar el parqueo: ")).strip().upper()								
 
+								# Busca si el vehículo está registrado en el sistema
 								pos_vehiculo = self.parqueadero.busqueda_general(placa, "Vehiculo")
 
 								if pos_vehiculo != -1:
 									
 									lugar = ""
-
+									
+									 # Se busca dentro de la lista de parqueos activos
 									for i in range(len(self.parqueadero.parqueos_lista)):
+										# Imprime todas las placas ocupadas
 										print(self.parqueadero.parqueos_lista[i].placa_parqueo)
-										if self.parqueadero.parqueos_lista[i].placa_parqueo == placa:						
+										# Si la placa del parqueo es igual a placa:
+										if self.parqueadero.parqueos_lista[i].placa_parqueo == placa:	
+											# Guardamos la posición del parqueo correspondiente					
 											lugar = i 												
 
+									# Si se encontró la placa en la lista de parqueos llama al metodo visualizar_general
 									if lugar != "":
 										self.parqueadero.visualizar_general(lugar, indice)
 									else:
@@ -502,14 +556,18 @@ class Menu:
 									"\n\t\t- MÓDULO ANULAR PARQUEO -"
 									"\n\t************************************************")
 
+								# Cantidad de parqueos ocupados
 								posicion = len(self.parqueadero.parqueos_lista)
 
+								# Si la posicion es mayor a 0 hay uno o mas parqueo ocupado
 								if posicion > 0:
-
+									
+									# Se obtiene el último vehículo ingresado (último de la lista)
 									posicion = len(self.parqueadero.parqueos_lista) - 1
 									print("\tRecuerde que este modulo solo anulara la ultima entrada registrada,"
 										"\n\tuna vez se registre la anulacion de la entrada podra realizar nuevamente el ingreso del vehiculo\n")
 
+									# Se elimina el último parqueo (anulación de entrada)
 									self.parqueadero.eliminar_general(posicion, indice)
 
 								else:
@@ -542,16 +600,23 @@ class Menu:
 					"\n\t\t- MÓDULO PARQUEOS OCUPADOS -"
 					"\n\t************************************************")
 
+					# Se obtiene la lista de parqueos activos desde el sistema
 					lista  = self.parqueadero.parqueos_lista
+
+					#contadores
 					vehi = 0
 					moto = 0
 
+					# Recorre toda la lista de parqueos ocupados
 					for i in range(len(lista)):
+						# Si en la posición i hay un automóvil
 						if self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "AUTOMOVIL":
-							vehi += 1
+							vehi += 1 # Suma uno al contador de automóviles
+						# Si en la posición i hay una motocicleta
 						elif self.parqueadero.parqueos_lista[i].parqueo_vehiculo[0] == "MOTOCICLETA":
-							moto += 1
+							moto += 1 # Suma uno al contador de motos
 
+					# Calcula el total de parqueos ocupados autos y motos
 					total = vehi + moto
 
 					if total == 0:
@@ -575,7 +640,7 @@ class Menu:
 					print("\n\t************************************************"
 					"\n\t\t- MÓDULO PARQUEOS DISPONIBLES -"
 					"\n\t************************************************")
-
+					#Llama el metodo reporte_general de la clase parqueadero
 					self.parqueadero.reporte_general(2)					
 
 				elif opcion == 6:
@@ -598,7 +663,7 @@ class Menu:
 								print("\n\t************************************************"
 									"\n\t- REPORTE CANTIDAD DE VEHICULOS PARQUEADOS -"
 									"\n\t************************************************")
-
+								#Llama el metodo reporte_general de la clase parqueadero
 								self.parqueadero.reporte_general(1)
 
 							
@@ -607,7 +672,7 @@ class Menu:
 								print("\n\t************************************************"
 									"\n\t- REPORTE CANTIDAD DE ESPACIOS DISPONIBLES -"
 									"\n\t************************************************")
-
+								#Llama el metodo reporte_general de la clase parqueadero
 								self.parqueadero.reporte_general(2)
 
 							elif opcion == 3:
@@ -615,7 +680,7 @@ class Menu:
 								print("\n\t************************************************"
 									"\n\t- REPORTE PAGOS RECIBIDOS POR PARQUEO -"
 									"\n\t************************************************")
-
+								#Llama el metodo reporte_general de la clase parqueadero
 								self.parqueadero.reporte_general(3)
 
 
@@ -659,8 +724,11 @@ class Menu:
 
 
 #======================================
+#ejecución del metodo principal e instancia
 if __name__ == '__main__':
+	#instancia
 	menu = Menu()
+	#objeto.metodo -> el que se ejecuta primero
 	menu.mostrar_menu_parqueadero()
 
 

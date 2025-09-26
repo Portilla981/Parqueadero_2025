@@ -1,16 +1,20 @@
 from os import system 
-import re
+import re # Libreria para trabajar con expresiones regulares (validación de email y placas)
 
+# Clase principal 
 class Propietario:
 
+	# Constructor de la clase
 	def __init__(self, codigo, nombre, apellido, telefono, email):
+		#Atributos
 		self.id_propietario = codigo
 		self.nombre_propietario = nombre
 		self.apellido_propietario = apellido
 		self.telefono_propietario = telefono
 		self.email_propietario = email
-				
+	
 
+	# Muestra todos los datos del propietario 
 	def visualizar_propietario(self):
 
 		print(f"\n\tId del Propietario:\t\t\t{self.id_propietario}\n"
@@ -22,8 +26,11 @@ class Propietario:
 
 	def modificar_propietario(self):
 
+		# Bucle
 		while True:
 			system('cls')
+
+			# Menú de opciones para modificar los datos del propietario
 			print("\n\t**************************************************"
 				f"\n\t- Se modificara el Propietario {self.nombre_propietario} {self.apellido_propietario} -"
 				"\n\t****************************************************"
@@ -44,14 +51,20 @@ class Propietario:
 
 					print("\n\t\t- Datos almacenadados -"
 						"\n\t==========================================================")	
+					#Llama metodo visualizar_propietario
 					self.visualizar_propietario()
 
 				elif opcion == 2:
+					# strip() → elimina espacios al inicio/fin
+					# upper() → convierte todo a MAYÚSCULAS
 					nombre = str(input("\tIngrese el nuevo nombre o nombres del Propietario: ")).strip().upper()
+
+					# Validación de campo vacío
 					while nombre == "":
 						nombre = str(input("\tEl dato ingresado esta vacio"
 							"\n\tIngrese el nuevo nombre o nombres del Propietario: ")).strip().upper()
 
+					# Mensaje de confirmación para guardar el cambio
 					if self.confirmacion() == 1:
 						self.nombre_propietario = nombre
 						print("\n\tEl nombre del Propietario fue modificado exitosamente.")
@@ -60,8 +73,10 @@ class Propietario:
 						
 
 				elif opcion == 3:
+					# strip() → elimina espacios al inicio/fin
+					# upper() → convierte todo a MAYÚSCULAS
 					apellido = str(input("\tIngrese el nuevo apellido o apellidos del Propietario: ")).strip().upper()
-					while apellido == "":
+					while apellido == "": # Validación de campo vacío
 						apellido = str(input("\tEl dato ingresado esta vacio"
 							"\n\tIngrese el nuevo apellido o apellidos del Propietario: ")).strip().upper()
 
@@ -73,8 +88,9 @@ class Propietario:
 						break
 
 				elif opcion == 4:
+					# strip() → elimina espacios al inicio/fin
 					telefono = str(input("\tIngrese el nuevo numero telefonico del Propietario: ")).strip()
-					while telefono.isdigit() == False:
+					while telefono.isdigit() == False: # Validación numerica
 						telefono = str(input("\tEl dato ingresado no es un numero Telefonico."
 							"\n\tIngrese el numero telefonico del Propietario: ")).strip()
 
@@ -104,7 +120,7 @@ class Propietario:
 
 	
 	def confirmacion(self):
-
+		#Mensaje de confirmación.
 		while True:
 			
 			print("\n\t¿Desea guardar los cambios realizados?"

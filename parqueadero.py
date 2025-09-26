@@ -1,13 +1,16 @@
-import re
+# Librerías
+import re # Para trabajar con expresiones regulares (validación de email y placas)
 from os import system 
-from datetime import datetime, date
+from datetime import datetime, date # Manejo de fechas y horas
 from propietarios import Propietario
 from parqueos import Parqueo
 from fecha import Fecha
 
+#Clase principal
 class Parqueadero:
 
 	def __init__(self):
+		#atributo tipo lista -> almacenar los objetos del sistema
 		self.propietarios_lista = []
 		self.vehiculos_lista = []
 		self.parqueos_lista = []
@@ -54,18 +57,20 @@ class Parqueadero:
 			return False
 
 	def validar_placa(self, placa, tipo):
-		
+		# Valida el formato de las placas
 		if tipo == 1:
 
+			# Automóviles: 3 letras + espacio + 3 dígitos
 			patron = r"^[a-zA-Z]{3} \d{3}$"
 
+			#Se usan regex simples y re.match para comprobar el formato
 			if re.match(patron, placa):
 				return True
 			else:
 				return False
 
 		elif tipo == 2:
-
+			 # Motos: 3 letras + espacio + 2 dígitos
 			patron = r"^[a-zA-Z]{3} \d{2}$"
 
 			if re.match(patron, placa):
@@ -79,6 +84,7 @@ class Parqueadero:
 
 		if indice == "Propietario":
 			
+			# Añade el objeto Propietario recibido como 'elemento' a la lista de propietarios
 			self.propietarios_lista.append(elemento)
 
 			system('cls')
@@ -86,11 +92,14 @@ class Parqueadero:
 				"\n\t\t- Datos almacenadados -"
 				"\n\t==========================================================")	
 
+			# Visualizar el último propietario agregado:
+            # Se calcula la posición del último elemento y se llama a su método de visualización.
 			ultimo = len(self.propietarios_lista) - 1				
 			self.propietarios_lista[ultimo].visualizar_propietario()
 
 		elif indice == "Vehiculo":
 			
+			# Añade el objeto Vehiculo recibido como 'elemento' a la lista de Vehiculos
 			self.vehiculos_lista.append(elemento)
 
 			system('cls')
@@ -103,30 +112,38 @@ class Parqueadero:
 
 		elif indice == "Parqueo":
 
+			#Se genera un código de zona (VEHICULO-001, MOTOCICLETA-01)
 			if elemento == 1:
 				ident = 'AUTOMOVIL'
-				zona = "VEHICULO-001"
-				precio = 2800
+				zona = "VEHICULO-001" # código base inicial
+				precio = 2800 # valor por hora/fracción 
 
 			elif elemento == 2:
 				ident = 'MOTOCICLETA'
 				zona = "MOTOCICLETA-01"	
 				precio = 1500
 			
+			#cuenta cuántos parqueos activos hay de ese tipo (para controlar capacidad y generar consecutivo)
 			contador = 0
 
 			for i in range(len(self.parqueos_lista)):
+				# para cada parqueo activo, si su tipo coincide con 'ident' aumentamos el contador
 				if self.parqueos_lista[i].parqueo_vehiculo[0] == ident:
 					contador +=1
+					# 'valor' guarda el id_parqueo del último parqueo encontrado de VEHICULO, MOTOCICLETA
 					valor = self.parqueos_lista[i].id_parqueo
 
+			#permite entre 0 y 10 parqueos por VEHICULO, MOTOCICLETA
 			if contador >= 0 and contador <= 10:
 
+				# Si ya hay uno, se genera el siguiente parqueo a partir del último 'valor'
 				if contador >0:				
 
+					# re.search busca la porción numérica final del id_parqueo ("001")
 					conversion = re.search(r'\d+$',valor)
 
 					if conversion:
+						# extrae el número, lo incrementa y lo vuelve a insertar ("002")
 						num = int(conversion.group())
 						zona = valor[:conversion.start()] + str(num + 1).zfill(len(conversion.group()))						
 					
@@ -134,6 +151,7 @@ class Parqueadero:
 						print("no hay consecutivo")					
 
 				
+				# Obtiene fecha y hora actaul para el registro de ingreso.
 				hoy = date.today()
 				ahora = datetime.now()
 				ahora = ahora.strftime("%H:%M:%S")
@@ -145,12 +163,16 @@ class Parqueadero:
 
 				placa = str(input("\tIngrese la identificacion de la placa del vehiculo: ")).strip().upper()								
 
+				# Se busca la posición del vehículo en vehiculos_lista; busqueda_general devuelve -1 si no existe
 				pos_vehiculo = self.busqueda_general(placa, "Vehiculo")
 
 				if pos_vehiculo != -1:
+
+					# Validación para que el vehículo no esté ya registrado como parqueado
 					lugar = 0
 
-					for parqueo in self.parqueos_lista:						
+					for parqueo in self.parqueos_lista:	
+						# Si existe un parqueo con la misma placa, marca como ya dentro					
 						if parqueo.placa_parqueo == placa:						
 							lugar = 1 	
 							break
@@ -323,9 +345,16 @@ class Parqueadero:
 	def busqueda_general(self, codigo, indice):
 
 		if indice == "Propietario":
-			for i in range (len(self.propietarios_lista)):				
+
+			# Recorre toda la lista de propiertarios
+			for i in range (len(self.propietarios_lista)): 
+
+				# Se compara el id de cada propietario con el código ingresado
 				if self.propietarios_lista[i].id_propietario == codigo:
+
+					# Retorna la posición en la lista si encuentra coincidencia
 					return i  
+			# Si no encuentra nada, retorna -1 
 			return -1
 
 		elif indice == "Vehiculo":
@@ -346,16 +375,21 @@ class Parqueadero:
 
 		if indice == "Propietario":
 
+			# Si la lista de propietarios no está vacía, lista.
 			if self.propietarios_lista:
 				print("\n\t\tListado de Propietarios"
 					"\n\t================================================")
+				# Contador para numerar cada propietario
 				contador = 0
 				
+				 # Recorre la lista de propietarios
 				for propietario in self.propietarios_lista:
 					print(f"\n\tPropietario No {contador + 1}"
 						f"\n\tId del Propietario:\t\t{propietario.id_propietario}"
 						f"\n\tNombre del Propietario:\t\t{propietario.nombre_propietario} {propietario.apellido_propietario}"
 						"\n\t=====================================================================================")
+					
+					# Se incrementa el contador
 					contador += 1
 			else:
 				print("\n\tLa lista esta vacia, Aun no se han agregado Propietarios")
@@ -399,8 +433,10 @@ class Parqueadero:
 #------------------------------------------------------------------------------------------------------------------------	
 	def visualizar_general(self, posicion, indice):
 
+		# Si indice es igual a propietario llama al metodo
 		if indice == "Propietario":
 
+			# Llama al método de la clase Propietario para mostrar sus datos
 			self.propietarios_lista[posicion].visualizar_propietario()
 
 		elif indice == "Vehiculo":
@@ -416,21 +452,27 @@ class Parqueadero:
 	
 	def modificar_general(self, posicion, indice):
 
+		# Si indice es igual a propietario:
 		if indice == "Propietario":
 
+			# Se llama al método modificar_propietario() de la clase Propietario
+            # Este devuelve un valor (ej: 1) para indicar qué campo se desea modificar
 			valor = self.propietarios_lista[posicion].modificar_propietario()
 
 			if valor == 1:
 
+				# Solicita el nuevo email y valida llamando al metodo validar_email
 				email = str(input("\tIngrese el nuevo correo electronico del Propietario: ")).strip()
 				while self.validar_email(email) == False:
 					email = str(input("\tEl dato ingresado no es valido para correo electronico"
 						"\n\tIngrese el nuevo correo electronico del Propietario: ")).strip()
 
+				# Confirmación para guardar los cambios
 				if self.confirmacion("") == 1:
 					self.propietarios_lista[posicion].email_propietario = email
 					print("\n\tEl Correo electronico del Propietario fue modificado exitosamente.")
 					input()
+					# Muestra el menú de modificación del propietario
 					self.propietarios_lista[posicion].modificar_propietario()
 
 				else:
@@ -442,21 +484,27 @@ class Parqueadero:
 
 		elif indice == "Vehiculo":
 
+			# Se llama al método modificar_vehiculo() de la clase Vehiculo
 			valor = self.vehiculos_lista[posicion].modificar_vehiculo()
 
 			if valor == 1:
 
 				codigo = str(input("\tIngrese el nuevo numero de identificacion del propietario: ")).strip()
+				# Validación numerica
 				while codigo.isdigit() == False:
 					codigo = str(input("\tEl dato ingresado no es un número de identificacion."
 						"\n\tIngrese el nuevo numero de identificacion del propietario: ")).strip()
 
+				# Busca si el propietario con esa identificación existe en el sistema
 				pos_propietario = self.busqueda_general(codigo, "Propietario")
 
+				# Si el propietario existe
 				if pos_propietario != -1:
 
+					# Confirmación para guardar cambios
 					if self.confirmacion("") == 1:
 
+						# Actualiza el propietario del vehículo con el nuevo id y nombre
 						nombre = self.propietarios_lista[pos_propietario].nombre_propietario
 						apellido = self.propietarios_lista[pos_propietario].apellido_propietario
 						self.vehiculos_lista[posicion].id_propietario_vehiculo = codigo
@@ -477,28 +525,34 @@ class Parqueadero:
 					self.vehiculos_lista[posicion].visualizar_vehiculo()
 
 # --------------------------------------------------------------------------------------------------------------
-
+	
 	def eliminar_general(self, posicion, indice):
 
+		# Si indice es igual a propietario:
 		if indice == "Propietario":
 
+			#Mensaje de advertencia
 			print("\tRecuerde..."
 				"\n\tAl realizar la eliminacion del propietario,"
 				"\n\ttodo vinculo que tenga el propietario tambien sera eliminado."
 				"\n\tEsta accion tendra efectos a las acciones futuras.")
 
 			mensaje = "\t¿Desea eliminar este propietario del sistema?"
+			# Confirmación para guardar cambios
 			valor = self.confirmacion(mensaje)
 
 			if valor == 1:
 
 				propio = self.propietarios_lista[posicion]
-
+				
+				# Busca todos los vehículos asociados al propietario y los elimina
 				for i in range(len(self.vehiculos_lista)):
 
 					if self.vehiculos_lista[i].id_propietario_vehiculo == propio.id_propietario:
+						# Elimina vehículo asociado
 						del self.vehiculos_lista[i]
 
+				# Elimina al propietario
 				del self.propietarios_lista[posicion]
 
 				print("\n\tSe ha eliminado a el propietario elegido")
@@ -513,6 +567,7 @@ class Parqueadero:
 
 			if valor == 1:
 
+				# Elimina el vehículo de la lista
 				del self.vehiculo_lista[posicion]
 
 				print("\n\tSe ha eliminado a el vehiculo elegido")
@@ -527,10 +582,13 @@ class Parqueadero:
 			valor = self.confirmacion(mensaje)
 
 			if valor == 1:
+
+				# Se marca el último registro en el reporte como ANULADO
 				ultima = len(self.reporte_lista) - 1
 
 				self.reporte_lista[ultima][2] = "ANULADA"
 
+				# Se elimina el parqueo activo de la lista
 				del self.parqueos_lista[posicion]	
 
 				print("\n\tSe ha anulado el ingreso del vehiculo, ya puede continuar con el registro")
@@ -543,9 +601,13 @@ class Parqueadero:
 	
 	def reporte_general(self, numero):
 
+		#Reporte general del historial (entradas, salidas y anulaciones)
 		if numero == 1:
 
+			# Cuenta cuántos registros hay en el historial
 			total = len(self.reporte_lista)
+
+			#Contadores
 			vehi = 0
 			moto = 0
 			anulada = 0
@@ -567,27 +629,37 @@ class Parqueadero:
 
 			if total > 0:
 
+				# Nombre del propietario de la primera entrada registrada
 				primer = self.reporte_lista[0][1]
 
+				# Recorre todos los registros de reporte_lista
 				for i in range(total):
 
 					if self.reporte_lista[i][2] == "AUTOMOVIL":
-						vehi += 1
+						vehi += 1 # Cuenta cuantos automóviles hay
 					elif self.reporte_lista[i][2] == "MOTOCICLETA":
-						moto += 1
+						moto += 1 # Cuenta cuantas motocicletas hay
 
 					elif self.reporte_lista[i][2] == "ANULADA":
-						anulada += 1
+						anulada += 1 # Cuenta cuantas anulaciones hay
 
-					if self.reporte_lista[i][8] > 0 and self.reporte_lista[i][9] == 1:						
+					# Recorre todos los registros de reporte_lista
+					if self.reporte_lista[i][8] > 0 and self.reporte_lista[i][9] == 1:	
+
+						# Guarda la posición de la última salida					
 						pos = i
+
+						# Aumenta el contador de salidas
 						salida += 1
 
-				
+				# Guarda la hora de la última salida registrada
 				ultima = self.reporte_lista[pos][5]
 
+			#Si vehi tiene solo 1 automovil muestra: 1 automovil
 			if vehi == 1:
 				vehi = "1 Automovil"
+
+			# Si tiene mas de 1 muestra cuantos tiene.
 			else:
 				vehi = f"{vehi} Automoviles"
 
@@ -630,37 +702,53 @@ class Parqueadero:
 
 			print("\n\t\t¡Gracias por utilizar nuestro servicio!")
 
+		#Reporte del estado actual de los parqueaderos disponibles
 		elif numero == 2:
 
+			# lista de parqueos activos
 			lista  = self.parqueos_lista
+
+			#Contadores
 			vehi = 0
 			moto = 0
 
+			# Recorre la lista de parqueos
 			for i in range(len(lista)):
+
+				# Verifica si el vehículo en el parqueo es un automóvil
 				if self.parqueos_lista[i].parqueo_vehiculo[0] == "AUTOMOVIL":
-					vehi += 1
+					vehi += 1 #Contador
+
+				# Verifica si el vehículo en el parqueo es una motocicleta
 				elif self.parqueos_lista[i].parqueo_vehiculo[0] == "MOTOCICLETA":
 					moto += 1
 
+			# Total de parqueos ocupados
 			total = vehi + moto
 
+			#Si total = 0, todos los cupos estan disponibles
 			if total == 0:
 				print(f"\tEn el momento tiene un total de 20 parqueos disponibles,"
 					"\n\t10 para Automoviles y 10 para Motocicletas")
+
+			# Si no, si hay vehiculos y resta segun los cupos que tiene el parqueadero
 			else:
 				print(f"\tEn el momento tiene un total de {20 - total} parqueos disponibles, de la siguinete forma:")
-
+				
+				# Si solo queda 1 cupo disponible para automoviles
 				if vehi == 9:
 					print (f"\tAutomoviles:\t1 zona Disponible")
 				else:
 					print (f"\tAutomoviles:\t{10 - vehi} zonas Disponibles")
 
+				# Si solo queda 1 cupo disponible para motocicletas
 				if moto == 9:
 					print (f"\tMotocicletas:\t1 zona Disponible ")
 				else:
 					print (f"\tMotocicletas:\t{10 - moto} zonas Disponibles ")
 
 
+		#Reporte económico (valores cobrados por salidas de vehículos)
 		elif numero == 3:
 
 			total = len(self.reporte_lista)
@@ -674,16 +762,22 @@ class Parqueadero:
 
 				# primer = self.reporte_lista[0][1]
 
+				# Recorre el historial de reportes
 				for i in range(total):
 
+					# Si es automóvil, tuvo cobro
 					if self.reporte_lista[i][2] == "AUTOMOVIL" and self.reporte_lista[i][8] > 0:
 						vehi += 1
+						# Acumula el valor pagado
 						valor_vehiculo += self.reporte_lista[i][8]
 					
+					# Si es motocicleta, tuvo cobro
 					elif self.reporte_lista[i][2] == "MOTOCICLETA" and self.reporte_lista[i][8] > 0:
 						moto += 1
+						# Acumula el valor pagado
 						valor_moto += self.reporte_lista[i][8]	
 
+			# Suma el valor de la moto y del automovil 
 			total_parqueadero = valor_vehiculo + valor_moto			
 
 			if vehi == 1:
@@ -719,6 +813,7 @@ class Parqueadero:
 					f"\n\tSubtotal del cobro de parqueaderos:\t$ {valor_moto}"
 					f"\n\t-----------------------------------------------------------")
 
+				# Verifica si fue un solo vehículo o más
 				if (moto + vehi) == 1:
 					print(f"\tHasta el momento se ha registrado el pago de un vehiculo")
 

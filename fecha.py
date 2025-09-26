@@ -48,25 +48,31 @@ class Fecha:
 		return False
 
 	def validar_dia(self, dia):
+		#mes 4, 6, 9, 11 son de 30 dias
 		if self.mes in [4, 6, 9, 11]:
 			if dia >= 1 and dia <= 30:
 				return True
 
+		#mes 1, 3, 5, 7, 8, 10, 12 son de 31 dias
 		elif self.mes in [1, 3, 5, 7, 8, 10, 12]:
 			if dia >= 1 and dia <= 31:
 				return True
 
 		elif self.mes == 2:
+			#Validar si el año es bisiesto
 			if self.validar_bisiesto(self.anio):
+				#si el año es bisiesto son 29 dias
 				if dia >= 1 and dia <= 29:
 					return True
 			else:
+				#si el año no es bisiesto son 28 dias
 				if dia >= 1 and dia <= 28:
 					return True
 
 		return False
 
 	def validar_bisiesto(self, anio):
+		#formula para determinar si el año es bisiesto
 		if anio % 4 == 0 and (anio % 100 != 0 or anio % 400 == 0):
 			return True
 		return False
@@ -82,6 +88,7 @@ class Fecha:
 
 	def crear_fecha(self):
 
+		# Captura la fecha/hora actual del sistema 
 		fecha_actual = datetime.now()
 		
 		# Solicitudes al usuario
@@ -93,16 +100,22 @@ class Fecha:
 		verifica = 0
 
 
+		# Si el año ingresado es mayor al actual es valido
 		if anio > fecha_actual.year:
 			verifica = 1
 
+		# Si el año es igual al actual hay que validar mes y día
 		elif anio == fecha_actual.year:
+			# Si el mes es igual al mes actual:
 			if mes == fecha_actual.month:
+				# Sólo se acepta si el día ingresado es mayor o igual al día actual
 				if dia >= fecha_actual.day:
 					verifica = 1
 				else:
 					print("\n\tEl dia ingresado es menor a la fecha actual, o tiene valores no válidos."
 						"\n\tVerifique e intente nuevamente")
+
+			# Si el mes ingresado es mayor al mes actual -> válido
 			elif mes > fecha_actual.month:
 				verifica = 1
 
@@ -135,9 +148,10 @@ class Fecha:
 
 	def crear_hora(self, fecha):
 
+		# Se captura la fecha/hora actual
 		fecha_actual = datetime.now()
 		ahora = datetime.now()
-		hora_lista = ahora.strftime("%H:%M:%S")
+		hora_lista = ahora.strftime("%H:%M:%S") #Hora actual como string
 
 		print("\n\tIngrese los siguientes datos: ") 
 		hora = int(input("\tIngrese la hora en formato 24H: "))

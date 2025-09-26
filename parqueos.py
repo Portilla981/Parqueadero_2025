@@ -1,13 +1,16 @@
-
+# Clase principal Menu
 class Parqueo:
 	
+	# Constructor de la clase
 	def __init__(self, parqueo, fecha, hora, placa):
+		#Atributos
 		self.id_parqueo = parqueo
 		self.fecha_parqueo = fecha
 		self.hora_parqueo = hora
 		self.placa_parqueo = placa		
 		self.parqueo_vehiculo = []
 
+	# Muestra todos los datos del parqueo
 	def visualizar_parqueo(self):
 
 		print(f"\n\tCodigo del Parqueo:\t\t\t{self.id_parqueo}\n"
