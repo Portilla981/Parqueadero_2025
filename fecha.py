@@ -151,10 +151,13 @@ class Fecha:
 		# Se captura la fecha/hora actual
 		fecha_actual = datetime.now()
 		ahora = datetime.now()
-		hora_lista = ahora.strftime("%H:%M:%S") #Hora actual como string
+
+		# Convierte la hora actual a formato string HH:MM:SS
+		hora_lista = ahora.strftime("%H:%M:%S")
 
 		print("\n\tIngrese los siguientes datos: ") 
 		hora = int(input("\tIngrese la hora en formato 24H: "))
+		# Validación, que el rango este entre 0 y 23
 		while hora < 0 and hora > 23:
 			hora = int(input("\tLa hora ingresada no es valida"
 				"\n\tIngrese la hora en formato 24H: "))
@@ -164,19 +167,28 @@ class Fecha:
 			minuto = int(input("\tLos minutos ingresados no son validos"
 				"\n\tIngrese los minutos: "))
 
+		# Convierte la fecha ingresada (string) a un objeto datetime
 		fecha = datetime.strptime(fecha, "%Y-%m-%d") 
 
+		# Si la fecha ingresada es mayor a la fecha actual 
+		#Se crea la hora en formato HH:MM:SS y se devuelve como válida
 		if fecha.date() > fecha_actual.date():
 			
 			accion = f"{hora}:{minuto}:00" 
 			return accion , 1
 
-
+		# Si la fecha ingresada es igual a la fecha actual
 		elif fecha.date() == fecha_actual.date():
+
+			# Y si la hora ingresada es mayor a la hora actual
+			#Se crea la hora en formato HH:MM:SS y se devuelve como válida
 			if hora > ahora.hour:
 				accion = f"{hora}:{minuto}:00" 
 				return accion , 1
+
+			# Si la hora ingresada es igual a la hora actual
 			elif hora == ahora.hour:
+				# Verifica que los minutos sean mayores
 				if minuto > ahora.minute:
 					accion = f"{hora}:{minuto}:00" 
 					return accion, 1

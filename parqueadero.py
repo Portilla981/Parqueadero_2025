@@ -178,23 +178,34 @@ class Parqueadero:
 							lugar = 1 	
 							break
 
+					# Si hay disponibilidad en el lugar (0 significa libre)
 					if lugar == 0:
+
+						# Se pide confirmación al usuario para registrar la entrada
 						mensaje = "\t¿Desea registrar la entrada al parqueadero?"
 						valor = self.confirmacion(mensaje)
 
 						if valor == 1:
 
+							# Lista temporal para guardar los datos del reporte
 							parque_datos = []
 							
+							# Se obtiene la fecha y hora actual como string y se convierte a objeto datetime
 							fecha_ingreso = f"{hoy} {ahora}"				
 							fecha_ingreso = datetime.strptime(fecha_ingreso, "%Y-%m-%d %H:%M:%S")
 
+							# Se crea el objeto Parqueo con zona, fecha, hora y placa
 							parqueo = Parqueo(zona, hoy, ahora, placa)
+
+							# Se añade el parqueo a la lista de parqueos activos
 							self.parqueos_lista.append(parqueo)
 
+							# Se obtiene el tipo de vehículo desde la lista de vehículos
 							tipo = self.vehiculos_lista[pos_vehiculo].tipo_vehiculo
 
 							parqueo.parqueo_vehiculo.append(tipo)
+
+							# Se guardan los demás datos del vehículo en la lista del objeto Parqueo
 							marca = self.vehiculos_lista[pos_vehiculo].marca_vehiculo
 							parqueo.parqueo_vehiculo.append(marca)
 							modelo = self.vehiculos_lista[pos_vehiculo].modelo_vehiculo
@@ -208,6 +219,7 @@ class Parqueadero:
 							precio_parqueo = precio
 							parqueo.parqueo_vehiculo.append(precio_parqueo)
 
+							# Se construye una lista con los datos del parqueo para el reporte general
 							parque_datos.append(zona)
 							parque_datos.append(fecha_ingreso)
 							parque_datos.append(tipo)
@@ -219,18 +231,22 @@ class Parqueadero:
 							parque_datos.append(0)
 							parque_datos.append(0)
 
+							# Se añade este registro a la lista de reportes
 							self.reporte_lista.append(parque_datos)
 
+							#Mensaje de confirmación
 							system('cls')
 							print(f"\n\tSe ha registrado exitosamente el parqueo del vehiculo."
 								"\n\t\t- Datos almacenadados -"
 								"\n\t==========================================================")
 
 							# ultimo = len(self.parqueos_lista) - 1	
+							# Muestra los datos del parqueo registrado
 							parqueo.visualizar_parqueo()			
 							# self.parqueos_lista[ultimo].visualizar_parqueo()					
 
 						else:
+							# Si el vehículo ya estaba dentro, no permite duplicar ingreso
 							print("\n\tSe cancelo la creacion del vehiculo")
 
 					else:
@@ -245,6 +261,7 @@ class Parqueadero:
 
 		elif indice == "Salida":
 
+			# Se obtiene el objeto Parqueo de la lista de parqueos activos
 			parqueo = self.parqueos_lista[elemento]
 			fecha = parqueo.fecha_parqueo
 			hora = parqueo.hora_parqueo
@@ -259,8 +276,12 @@ class Parqueadero:
 				
 				fecha_ingreso = datetime.strptime(fecha_ingreso, "%Y-%m-%d %H:%M:%S")
 				print(f"\tRegistro de ingreso: {fecha_ingreso}")
+
+				# Se solicita la fecha de salida al usuario
 				print("\n\tFecha de salida")
 				fecha_salida = self.fecha_usuario.crear_fecha()
+
+				# Repite hasta que sea válida
 				while fecha_salida == False:
 					fecha_salida = self.fecha_usuario.crear_fecha()
 
@@ -272,13 +293,21 @@ class Parqueadero:
 
 				if unidad == 1:
 
+					# Se convierte a datetime y calcula la diferencia de tiempo
 					tiempo = f"{fecha_salida} {hora_usuario}"
 					tiempo = datetime.strptime(tiempo, "%Y-%m-%d %H:%M:%S")					
 					diferencia = tiempo - fecha_ingreso
+
+					# Diferencia en segundos
 					diferencia = abs(diferencia.total_seconds() / 60)
+
+					# Diferencia en horas
 					horas_dif = int(diferencia // 60)
+
+					# Diferencia en minutos
 					minutos_dif = int(diferencia % 60)
 					
+					# Si hubo al menos 1 minuto, se cobra la hora completa
 					if minutos_dif >= 1:
 						total = (horas_dif + 1) * precio
 					else:
@@ -318,6 +347,7 @@ class Parqueadero:
 							"\n\t¡Gracias por utilizar nuestro servicio!"
 							"\n\tRecuerde mostrar este tikect a la salida")
 
+						# Actualiza la lista de reportes con los datos de salida
 						datos = self.reporte_lista
 
 						for i in range(len(datos)):
@@ -330,6 +360,7 @@ class Parqueadero:
 								self.reporte_lista[i][8] = total
 								self.reporte_lista[i][9] = 1
 
+						# Se elimina el parqueo de la lista de activos
 						del self.parqueos_lista[elemento]	
 		
 					else:

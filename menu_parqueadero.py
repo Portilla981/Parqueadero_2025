@@ -241,9 +241,11 @@ class Menu:
 										"\n\t0). Salir del modulo"
 										"\n\topcion: "))
 
+									# Si el usuario selecciona salir, rompe el ciclo
 									if tipo == 0:
 										break
 
+									# Si eligió un tipo válido (1 o 2)
 									elif tipo == 1 or tipo == 2:
 
 										# Se pide la placa → strip() elimina espacios, upper() lo pone en MAYÚSCULAS
